@@ -2,71 +2,21 @@
 #define _MINESWEEPER_
 
 #include <Arduino.h>
+#include "Field.cpp"
 
-/*
-   State
-
-   Feladata:
-      Egy mező állapotának reprezentálása
-
-   Állapotok:
-      - UNSELECTED: a mező tartalma nem ismert a felhasználónak, nem volt még kiválasztva/felfedve
-      - FLAGGED: zászlóval megjelölve, potenciálisan akna van ott
-      - REVEALED: a mezőt kiválasztotta a felhasználó / az algoritmus felfedte, mert üres
-
-*/
-
-enum State
-{
-  UNSELECTED,
-  FLAGGED,
-  REVEALED
-};
-
-/*
-  Field osztály: Tárolja egy mező adatait
-
-  Mezők:
-    HasMine: Tárolja, hogy az adott mező akna-e
-      true : igen, false: nem
-    neighborMineCount: Tárolja a szomszédos aknásított mezők számát
-    state: a mező állapota
-*/
-
-class Field
-{
-  public:
-    bool hasMine;
-    int neighborMineCount;
-    enum State state;
-
-    Field() {
-      hasMine = false;
-      neighborMineCount = 0;
-      state = UNSELECTED;
-    }
-};
-
-
-/*
-  Minesweeper osztály: Tárolja a játékhoz szükséges adatokat
-
-  Mezők:
-    size:
-      A táblázat mérete (size*size)
-    mineCount
-      A játékban lévő aknák száma, ami a generált táblázat méretétől függ.
-    remainFields
-      A hátralévő, nem kiválasztott mezők száma
-      Ha egyenlő a mineCount-al, akkor a játék megnyerésre került.
-    flaggedFields:
-      A zászlóval jelölt helyek száma
-    hasRevealedMine
-      Tárolja, hogy a játékos aknát fedett-e fel (true: igen, false: nem)
-    fields:
-      Mezőket tároló mátrix, dinamikus allokálású
-*/
-
+/**
+ * @class Minesweeper
+ * @brief Stores the data required for the Minesweeper game.
+ *
+ * Fields:
+ * - size: The size of the board (size * size)
+ * - mineCount: The number of mines in the game, which depends on the generated board size
+ * - remainFields: The number of remaining unrevealed fields.
+ *                 If this equals mineCount, the game is won.
+ * - flaggedFields: The number of fields marked with a flag
+ * - hasRevealedMine: Indicates whether the player has revealed a mine (true: yes, false: no)
+ * - fields: A dynamically allocated matrix storing the fields
+ */
 class Minesweeper
 {
   public:
@@ -77,6 +27,10 @@ class Minesweeper
     bool hasRevealedMine;
     Field **fields;
 
+    /**
+     * @brief Constructor that initializes the game board.
+     * @param s The size of the board
+     */
     Minesweeper(int s) {
       size = s;
       mineCount = 0;
@@ -87,39 +41,58 @@ class Minesweeper
       allocateFields();
     }
 
+    /**
+     * @brief Destructor that frees allocated memory.
+     */
     ~Minesweeper() {
       freeFields();
     }
 
-    // fieldExists: ellenőrzi, hogy az adott mező hely létezik-e
+    /**
+     * @brief Checks whether the given field coordinates are valid.
+     * @param row Row index
+     * @param column Column index
+     * @return True if the field exists on the board
+     */
     bool fieldExists(int row, int column) {
       return row >= 0 && column >= 0 && row < size && column < size;
     }
 
+    /**
+     * @brief Handles the logic when a field is selected.
+     *
+     * The user cannot select a previously revealed or flagged field.
+     * Mines are generated only after the first move to prevent immediate loss.
+     * If a mine is revealed, the game is marked as lost.
+     */
     void selectField(int row, int column) {
-      /* Korábban felfedett mezőt, illetve zászlóval jelölt helyet
-        nem választhat a felhasználó, előtte el kell azt távolítania. */
+      /* The user cannot select a previously revealed or flagged field.
+         It must be unmarked first. */
       if (fields[row][column].state == REVEALED ||
           fields[row][column].state == FLAGGED)
         return;
-
 
       if (fields[row][column].hasMine) {
         hasRevealedMine = true;
         fields[row][column].state = REVEALED;
       }
 
-      /* Aknák csak az első lépés után generálódnak, hogy
-        a felhasználó ne lépjen egyszerre aknára.*/
+      /* Mines are generated only after the first move
+         to prevent the user from stepping on a mine immediately. */
       if (remainFields == size * size) {
         generateMines(row, column);
       }
     }
 
-    // unrevealField: rekurzív algoritmus, ami felfedi a környező aknamentes mezőket
+    /**
+     * @brief Recursively reveals adjacent non-mine fields.
+     *
+     * If the field is invalid or already revealed, recursion stops.
+     * If the field has neighboring mines, it is revealed and recursion ends.
+     */
     void unrevealField(int row, int column) {
-      /* Amennyiben az adott mező nem érvényes (pl. negatív szám), vagy
-        korábban már felfedésre került az adott hely, akkor a rekurzió befejeződik. */
+      /* If the field is invalid (e.g., negative index) or
+         already revealed, recursion stops. */
       if (!fieldExists(row, column) || fields[row][column].state == REVEALED) {
         return;
       }
@@ -131,13 +104,13 @@ class Minesweeper
       fields[row][column].state = REVEALED;
       remainFields--;
 
-      /* Ha egy hely körül van szomszédos akna, akkor azt a helyet felfedjük,
-        és utána fejeződik be a rekurzió. */
+      /* If the field has neighboring mines, it is revealed
+         and recursion ends. */
       if (fields[row][column].neighborMineCount != 0) {
         return;
       }
 
-      // Felfedjük a szomszédos mezőket.
+      // Reveal neighboring fields.
       for (int i = -1; i <= 1; i++) {
         for (int j = -1; j <= 1; j++) {
           unrevealField(row + i, column + j);
@@ -145,6 +118,9 @@ class Minesweeper
       }
     }
 
+    /**
+     * @brief Toggles a flag on the selected field.
+     */
     void changeFlag(int row, int column) {
       if (fields[row][column].state == FLAGGED) {
         fields[row][column].state = UNSELECTED;
@@ -156,13 +132,19 @@ class Minesweeper
       }
     }
 
+    /**
+     * @brief Returns the estimated number of remaining mines based on flags.
+     * @return Number of unflagged mines
+     */
     int getRemainFieldsByFlags() {
       return mineCount - flaggedFields;
     }
 
   private:
 
-    // allocateFields: mátrix dinamikus allokációjáért felelős metódus
+    /**
+     * @brief Allocates memory for the field matrix.
+     */
     void allocateFields()
     {
       fields = NULL;
@@ -175,31 +157,42 @@ class Minesweeper
       }
     }
 
-    // freeFields: memória felszabadításért felelős metódus
+    /**
+     * @brief Frees the memory allocated for the field matrix.
+     */
     void freeFields()
     {
       for (int i = 0; i < size; i++) {
-        delete[](fields[i]);
+        delete(fields[i]);
         fields[i] = NULL;
       }
-      delete[](fields);
+      delete(fields);
       fields = NULL;
     }
 
+    /**
+     * @brief Checks whether memory allocation was successful.
+     *
+     * If not, prints an error message and halts the program.
+     */
     void checkSuccessfulAllocation(void *pointer)
     {
       if (pointer == NULL) {
-        Serial.println("HIBA: memoria allokacio hiba tortent a program futasa soran!");
+        Serial.println("ERROR: Memory allocation failure occurred during program execution!");
         delay(10000);
         while (true);
       }
     }
 
-    /* Aknák generálásáért felelős algoritmus
-      firstStepRow: első kiválasztott akna sorszáma
-      firstStepColumn: első kiválasztott akna oszlopszáma.
-      Ezek szükségesek, hogy oda ne kerüljön akna.
-    */
+    /**
+     * @brief Generates mines on the board.
+     *
+     * @param firstStepRow The row index of the first selected field
+     * @param firstStepColumn The column index of the first selected field
+     *
+     * Ensures that no mine is placed on the first selected field.
+     * Also updates the neighbor mine count for adjacent fields.
+     */
     void generateMines(int firstStepRow, int firstStepColumn) {
       for (int i = 0; i < mineCount;) {
         int row = random(0, size);

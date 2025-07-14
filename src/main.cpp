@@ -1,3 +1,21 @@
+
+/* put function declarations here:
+int myFunction(int, int);
+
+void setup() {
+  // put your setup code here, to run once:
+  int result = myFunction(2, 3);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+}
+
+// put function definitions here:
+int myFunction(int x, int y) {
+  return x + y;
+}*/
+
 /*
   Simple "Hello World" for ILI9341 LCD
 
@@ -12,10 +30,12 @@
 #define _MAIN_
 
 #include "SPI.h"
+#include <Arduino.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_ILI9341.h>
 #include <Adafruit_FT6206.h>
 
+#include "Color.cpp"
 #include "FieldDisplay.cpp"
 #include "Minesweeper.cpp"
 
@@ -23,6 +43,19 @@
 #define TFT_CS 10
 Adafruit_ILI9341 display (TFT_CS, TFT_DC);
 Adafruit_FT6206 ctp = Adafruit_FT6206();
+
+int getSizeFromTouch(TS_Point point) {
+  if (point.x >= 70 && point.x <= 170) {
+    if (point.y >= 90 && point.y <= 140) {
+      return 6;
+    } else if (point.y > 165 && point.y < 215) {
+      return 7;
+    } else if (point.y > 240 && point.y < 290) {
+      return 8;
+    }
+  }
+  return 0;
+}
 
 /*
   Egy hely mérete 20x20 pixel.
@@ -53,20 +86,8 @@ int getSizeFromMenu() {
     point.y = map(point.y, 0, 320, 320, 0);
     newSize = getSizeFromTouch(point);
   } while (newSize == 0);
+  
   return newSize;
-}
-
-int getSizeFromTouch(TS_Point point) {
-  if (point.x >= 70 && point.x <= 170) {
-    if (point.y >= 90 && point.y <= 140) {
-      return 6;
-    } else if (point.y > 165 && point.y < 215) {
-      return 7;
-    } else if (point.y > 240 && point.y < 290) {
-      return 8;
-    }
-  }
-  return 0;
 }
 
 void setup() {

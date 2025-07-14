@@ -6,6 +6,8 @@
 #include <Adafruit_ILI9341.h>
 #include <Adafruit_FT6206.h>
 #include "Minesweeper.cpp"
+#include "Color.cpp"
+#include "Vector2D.cpp"
 
 #define START_Y 80
 #define START_X 5
@@ -13,18 +15,6 @@
 #define MAX_WIDTH 240
 #define FIELD_SIZE 20
 #define FIELD_GAP 10
-
-enum color {
-  BLUE = ILI9341_BLUE,
-  RED = 0xc800,
-  GREEN = 0x0500,
-  DARKBLUE = 0x000f,
-  DARKRED = 0xa000,
-  CYAN = 0x0515,
-  BLACK = ILI9341_BLACK,
-  GRAY = 0x8430,
-  DARKGRAY = 0x5AEB
-};
 
 class FieldDisplay {
 
@@ -44,11 +34,8 @@ class FieldDisplay {
     void showTable() {
       display->fillScreen(DARKGRAY);
       showRemainMines();
-      delay(50);
       for (int i = 0; i < board->size; i++) {
-        delay(50);
         for (int n = 0; n < board->size; n++) {
-          delay(50);
           displayField(i, n);
         }
       }
@@ -58,12 +45,12 @@ class FieldDisplay {
       // Várunk egy érintésre.
       while (!ctp->touched());
       // Rövid érintés esetén az adott helyet felfedjük, hosszú érintés esetén zászlót helyezünk rá.
-      TS_Point point;
-      int i = 0;
-      for (; i < 15 && ctp->touched(); i++) {
+      TS_Point point; int i;
+      for (i = 0; i < 15 && ctp->touched(); i++) {
         point = getPoint();
         delay(50);
       }
+
       if (i < 10) {
         markField(point);
       } else {
@@ -73,43 +60,42 @@ class FieldDisplay {
 
 
     void markField(TS_Point point) {
-      for (int i = 0; i < board->size; i++) {
-        for (int j = 0; j < board->size; j++) {
-          if (fieldHasTouched(point, i, j)) {
+      Vector2D fieldCoords = *getTouchedFieldArrayPosition(point);
 
-            // Ha már fel van fedve a mező, akkor nem módosítunk semmit sem.
-            if (board->fields[i][j].state == REVEALED) {
-              return;
-            }
-
-            board->selectField(i, j);
-            board->unrevealField(i, j);
-
-            if (board->fields[i][j].neighborMineCount == 0 || board->hasRevealedMine) {
-              showTable();
-            } else {
-              displayField(i, j);
-            }
-
-            return;
-          }
-        }
+      if (fieldCoords.x == -1 || fieldCoords.y == -1) {
+        return;
       }
+
+      Field *field = &board->fields[fieldCoords.y][fieldCoords.x];
+
+      // Ha már fel van fedve a mező, akkor nem módosítunk semmit sem.
+      if (field->state == REVEALED || field->state == FLAGGED) {
+        return;
+      }
+
+      board->selectField(fieldCoords.y, fieldCoords.x);
+      board->unrevealField(fieldCoords.y, fieldCoords.x);
+
+      if (field->neighborMineCount == 0 || board->hasRevealedMine) {
+        showTable();
+      } else {
+        displayField(fieldCoords.y, fieldCoords.x);
+      }
+
     }
 
     void flagField(TS_Point point) {
-      for (int i = 0; i < board->size; i++) {
-        for (int j = 0; j < board->size; j++) {
-          if (fieldHasTouched(point, i, j)) {
-            board->changeFlag(i,j);
-            displayField(i, j);
-            showRemainMines();
+      Vector2D coords = *getTouchedFieldArrayPosition(point);
 
-            return;
-          }
-        }
+      if (coords.x == -1 || coords.y == -1) {
+        return;
       }
 
+      board->changeFlag(coords.y, coords.x);
+      displayField(coords.y, coords.x);
+      showRemainMines();
+
+      return;
     }
 
   private:
@@ -124,12 +110,25 @@ class FieldDisplay {
       return START_X + column * (FIELD_SIZE + FIELD_GAP);
     }
 
+    Vector2D* getTouchedFieldArrayPosition(TS_Point point) {
+      for (int i = 0; i < board->size; i++) {
+        for (int j = 0; j < board->size; j++) {
+          if (fieldHasTouched(point, i, j)) {
+            return new Vector2D(j, i);
+          }
+        }
+      }
+
+      return new Vector2D(-1, -1);
+    }
+
     // fieldHasTouched: meghatározza, hogy az adott mező meg lett-e érintve
     bool fieldHasTouched(TS_Point point, int row, int column) {
       int fieldStartX = calculateX(column);
       int fieldStartY = calculateY(row);
       bool xCheck = point.x >= fieldStartX && point.x <= fieldStartX + FIELD_SIZE;
       bool yCheck = point.y >= fieldStartY && point.y <= fieldStartY + FIELD_SIZE;
+
       return xCheck && yCheck;
     }
 
@@ -235,13 +234,13 @@ class FieldDisplay {
       return point;
     }
 
-    void showRemainMines(){
+    void showRemainMines() {
       // A zászlóval jelölt helyek száma alapján kiírja a maradék aknásított helyek számát.
       display->setCursor(START_X, 20);
       display->setTextColor(GRAY);
       display->setTextSize(2);
       display->println("Maradek aknak:");
-      display->fillRect(START_X, 40, MAX_WIDTH-50, 30, DARKGRAY);
+      display->fillRect(START_X, 40, MAX_WIDTH - 50, 30, DARKGRAY);
       display->setCursor(START_X, 40);
       display->setTextColor(GRAY);
       display->print(board->getRemainFieldsByFlags());
