@@ -4,9 +4,10 @@
 
 Language: Cpp
 BasedOnStyle: Microsoft
-UseTab: ForIndentation
 IndentAccessModifiers: true
 EmptyLineBeforeAccessModifier: Always
 EmptyLineAfterAccessModifier: Always
 AllowShortLoopsOnASingleLine: true
 IndentCaseLabels: true
+AccessModifierOffset: -1
+IndentWidth: 2

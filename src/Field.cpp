@@ -16,11 +16,13 @@
 class Field
 {
   public:
+
     bool hasMine;
     int neighborMineCount;
     enum State state;
 
-    Field() {
+    Field()
+    {
       hasMine = false;
       neighborMineCount = 0;
       state = UNSELECTED;
