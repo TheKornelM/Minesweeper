@@ -1,0 +1,13 @@
+# Google C/C++ Code Style settings
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+# Author: Kehan Xue, kehan.xue (at) gmail.com
+
+Language: Cpp
+BasedOnStyle: Microsoft
+IndentAccessModifiers: true
+EmptyLineBeforeAccessModifier: Always
+EmptyLineAfterAccessModifier: Always
+AllowShortLoopsOnASingleLine: true
+IndentCaseLabels: true
+AccessModifierOffset: -1
+IndentWidth: 2

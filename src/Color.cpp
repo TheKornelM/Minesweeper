@@ -3,7 +3,8 @@
 
 #include <Adafruit_ILI9341.h>
 
-enum color {
+enum color
+{
   BLUE = ILI9341_BLUE,
   RED = 0xc800,
   GREEN = 0x0500,
