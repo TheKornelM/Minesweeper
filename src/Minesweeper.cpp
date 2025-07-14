@@ -7,26 +7,17 @@
 /**
  * @class Minesweeper
  * @brief Stores the data required for the Minesweeper game.
- *
- * Fields:
- * - size: The size of the board (size * size)
- * - mineCount: The number of mines in the game, which depends on the generated board size
- * - remainFields: The number of remaining unrevealed fields.
- *                 If this equals mineCount, the game is won.
- * - flaggedFields: The number of fields marked with a flag
- * - hasRevealedMine: Indicates whether the player has revealed a mine (true: yes, false: no)
- * - fields: A dynamically allocated matrix storing the fields
  */
 class Minesweeper
 {
   public:
 
-    int size;
-    int mineCount;
-    int remainFields;
-    int flaggedFields;
-    bool hasRevealedMine;
-    Field **fields;
+    int size;             // The size of the board (size * size)
+    int mineCount;        // The number of mines in the game, which depends on the generated board size
+    int remainFields;     // The number of remaining unrevealed fields. If this equals mineCount, the game is won.
+    int flaggedFields;    // The number of fields marked with a flag
+    bool hasRevealedMine; // Indicates whether the player has revealed a mine (true: yes, false: no)
+    Field **fields;       // A dynamically allocated matrix storing the fields
 
     /**
      * @brief Constructor that initializes the game board.
@@ -132,6 +123,8 @@ class Minesweeper
 
     /**
      * @brief Toggles a flag on the selected field.
+     * @param row Row index of the field
+     * @param column Column index of the field
      */
     void changeFlag(int row, int column)
     {

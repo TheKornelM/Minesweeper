@@ -3,22 +3,36 @@
 
 #include "State.cpp"
 
-/*
-  Field osztály: Tárolja egy mező adatait
-
-  Mezők:
-    HasMine: Tárolja, hogy az adott mező akna-e
-      true : igen, false: nem
-    neighborMineCount: Tárolja a szomszédos aknásított mezők számát
-    state: a mező állapota
-*/
-
+/**
+ * @class Field
+ * @brief Stores data related to a single field in the game.
+ *
+ * This class represents a field that may or may not contain a mine,
+ * and keeps track of its state and the number of neighboring mines.
+ *
+ * @var Field::HasMine
+ * Indicates whether the field contains a mine.
+ * - true: the field contains a mine
+ * - false: the field does not contain a mine
+ */
 class Field
 {
   public:
 
+    /**
+     * @brief Indicates whether the field contains a mine.
+     *
+     * - true: the field contains a mine
+     * - false: the field does not contain a mine
+     */
     bool hasMine;
+    /**
+     * @brief Stores the number of neighboring fields that contain mines.
+     */
     int neighborMineCount;
+    /**
+     * @brief Stores the state of the field.
+     */
     enum State state;
 
     Field()
