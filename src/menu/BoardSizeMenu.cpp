@@ -30,20 +30,20 @@ int BoardSizeMenu::getSize()
 int BoardSizeMenu::getSizeFromPosition(TS_Point point)
 {
   // Size boxes are stacked vertically, so their X coordinates are equal.
-  if (point.x < 70 || point.x > 170)
+  if (point.x < VERTICAL_STACK_X_START || point.x > VERTICAL_STACK_X_END)
   {
     return 0;
   }
 
-  if (point.y >= 90 && point.y <= 140)
+  if (point.y >= SIZE_6_BUTTON_Y_START && point.y <= SIZE_6_BUTTON_Y_END)
   {
     return 6;
   }
-  else if (point.y > 165 && point.y < 215)
+  else if (point.y >= SIZE_7_BUTTON_Y_START && point.y <= SIZE_7_BUTTON_Y_END)
   {
     return 7;
   }
-  else if (point.y > 240 && point.y < 290)
+  else if (point.y >= SIZE_8_BUTTON_Y_START && point.y <= SIZE_8_BUTTON_Y_END)
   {
     return 8;
   }
