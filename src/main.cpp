@@ -1,33 +1,9 @@
-
-/* put function declarations here:
-int myFunction(int, int);
-
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
-}*/
-
 /*
-  Simple "Hello World" for ILI9341 LCD
-
-  https://wokwi.com/arduino/projects/308024602434470466
+  240 × RGB × 320 (TFT)
 */
 
-/*
-  240 × RGB × 320(TFT)
-*/
-
-#ifndef _MAIN_
-#define _MAIN_
+#ifndef MINESWEEPER_MAIN
+#define MINESWEEPER_MAIN
 
 #include "SPI.h"
 #include <Adafruit_FT6206.h>
@@ -35,15 +11,21 @@ int myFunction(int x, int y) {
 #include <Adafruit_ILI9341.h>
 #include <Arduino.h>
 
-#include "Color.cpp"
-#include "FieldDisplay.cpp"
-#include "Minesweeper.cpp"
+#include "Color.h"
+#include "FieldDisplay.h"
+#include "Minesweeper.h"
 
 #define TFT_DC 9
 #define TFT_CS 10
 Adafruit_ILI9341 display(TFT_CS, TFT_DC);
 Adafruit_FT6206 ctp = Adafruit_FT6206();
 
+/**
+ * @brief Determines the board size based on touch coordinates from the menu.
+ *
+ * @param point The TS_Point object containing the touch coordinates.
+ * @return The selected board size (6, 7, or 8), or 0 if no valid selection was made.
+ */
 int getSizeFromTouch(TS_Point point)
 {
   if (point.x >= 70 && point.x <= 170)
@@ -65,10 +47,15 @@ int getSizeFromTouch(TS_Point point)
 }
 
 /*
-  Egy hely mérete 20x20 pixel.
-  A tábla maximum 8x8-as lehet.
+  The size of one field is 20x20 pixels.
+  The maximum board size is 8x8.
 */
 
+/**
+ * @brief Displays a menu for selecting the board size and waits for user input.
+ *
+ * @return The selected board size.
+ */
 int getSizeFromMenu()
 {
   display.fillScreen(DARKGRAY);
@@ -76,9 +63,9 @@ int getSizeFromMenu()
   display.setTextColor(ILI9341_WHITE);
 
   display.setCursor(50, 40);
-  display.print("Tabla meret:");
+  display.print("Board size:");
 
-  // Főmenü gombjainak megjelenítése
+  // Displaying main menu buttons
   for (int i = 0; i < 3; i++)
   {
     display.fillRect(70, (90 + (i * 75)), 100, 50, GRAY);
@@ -100,19 +87,28 @@ int getSizeFromMenu()
   return newSize;
 }
 
+/**
+ * @brief Initializes the serial communication and the random seed.
+ */
 void setup()
 {
   Serial.begin(9600);
   randomSeed(analogRead(0));
 }
 
+/**
+ * @brief The main loop of the Minesweeper game.
+ *
+ * Initializes the display and touch screen, allows the user to select board size,
+ * and then runs the game until a mine is revealed or all non-mine fields are uncovered.
+ */
 void loop()
 {
   display.begin();
 
   if (!ctp.begin(40))
   {
-    Serial.println("Hiba történt az érintőképernyő inicializálása során!");
+    Serial.println("Error initializing touchscreen!");
     while (1);
   }
 
