@@ -12,7 +12,7 @@
 #include <Arduino.h>
 
 #include "Color.cpp"
-#include "FieldDisplay.cpp"
+#include "FieldDisplay.h"
 #include "Minesweeper.cpp"
 
 #define TFT_DC 9

@@ -1,7 +1,7 @@
 #ifndef _MINESWEEPER_
 #define _MINESWEEPER_
 
-#include "Field.cpp"
+#include "Field.h"
 #include <Arduino.h>
 
 /**

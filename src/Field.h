@@ -1,5 +1,5 @@
-#ifndef FIELD
-#define FIELD
+#ifndef MINESWEEPER_FIELD_H
+#define MINESWEEPER_FIELD_H
 
 #include "State.cpp"
 
@@ -10,7 +10,7 @@
  * This class represents a field that may or may not contain a mine,
  * and keeps track of its state and the number of neighboring mines.
  *
- * @var Field::HasMine
+ * @var Field::hasMine
  * Indicates whether the field contains a mine.
  * - true: the field contains a mine
  * - false: the field does not contain a mine

@@ -1,5 +1,5 @@
-#ifndef VECTOR2D
-#define VECTOR2D
+#ifndef MINESWEEPER_VECTOR2D_H
+#define MINESWEEPER_VECTOR2D_H
 
 /**
  * @class Vector2D
