@@ -11,6 +11,11 @@ class BoardSizeMenu
   public:
 
     BoardSizeMenu(Adafruit_ILI9341 *display, Adafruit_FT6206 *ctp);
+    /**
+     * @brief Displays a menu for selecting the board size and waits for user input.
+     *
+     * @return The selected board size.
+     */
     int getSize();
 
   private:
@@ -18,6 +23,9 @@ class BoardSizeMenu
     Adafruit_ILI9341 *display;
     Adafruit_FT6206 *ctp;
     int getSizeFromPosition(TS_Point point);
+    void showSizeButtons();
+    void drawTitle();
+    TS_Point getMappedTouchPoint();
 };
 
 #endif
