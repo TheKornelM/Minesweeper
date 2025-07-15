@@ -1,8 +1,8 @@
 #ifndef MINESWEEPER_FIELD_DISPLAY_H
 #define MINESWEEPER_FIELD_DISPLAY_H
 
-#include "Color.cpp"
-#include "Minesweeper.cpp"
+#include "Color.h"
+#include "Minesweeper.h"
 #include "Vector2D.h"
 #include <Adafruit_FT6206.h>
 #include <Adafruit_GFX.h>

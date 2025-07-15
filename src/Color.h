@@ -1,5 +1,5 @@
-#ifndef COLOR
-#define COLOR
+#ifndef MINESWEEPER_COLOR_H
+#define MINESWEEPER_COLOR_H
 
 #include <Adafruit_ILI9341.h>
 

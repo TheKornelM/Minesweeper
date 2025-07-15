@@ -1,3 +1,6 @@
+#ifndef MINESWEEPER_STATE_H
+#define MINESWEEPER_STATE_H
+
 /**
  * @enum State
  * @brief Represents the state of a field in the game.
@@ -19,3 +22,5 @@ enum State
    */
   REVEALED
 };
+
+#endif

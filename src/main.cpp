@@ -2,8 +2,8 @@
   240 × RGB × 320 (TFT)
 */
 
-#ifndef _MAIN_
-#define _MAIN_
+#ifndef MINESWEEPER_MAIN
+#define MINESWEEPER_MAIN
 
 #include "SPI.h"
 #include <Adafruit_FT6206.h>
@@ -11,9 +11,9 @@
 #include <Adafruit_ILI9341.h>
 #include <Arduino.h>
 
-#include "Color.cpp"
+#include "Color.h"
 #include "FieldDisplay.h"
-#include "Minesweeper.cpp"
+#include "Minesweeper.h"
 
 #define TFT_DC 9
 #define TFT_CS 10
