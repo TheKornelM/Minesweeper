@@ -1,29 +1,11 @@
-/**
- * @file FieldDisplay.cpp
- * @brief Manages the display and touch interactions for the Minesweeper game.
- *
- * This file defines the FieldDisplay class, which is responsible for rendering the
- * Minesweeper game board on an Adafruit ILI9341 TFT screen and handling user
- * input from an Adafruit FT6206 capacitive touch controller.
- */
-
 #include "FieldDisplay.h"
 
-/**
- * @brief Constructs a new FieldDisplay object.
- * @param fields Pointer to the Minesweeper game instance.
- * @param screen Pointer to the Adafruit_ILI9341 display instance.
- * @param touch Pointer to the Adafruit_FT6206 touch controller instance.
- */
 FieldDisplay::FieldDisplay(Minesweeper *fields, Adafruit_ILI9341 *screen, Adafruit_FT6206 *touch)
     : BaseMenuPage(screen, touch), drawField(screen)
 {
   board = fields;
 }
 
-/**
- * @brief Redraws the entire game board based on the current state.
- */
 void FieldDisplay::showTable()
 {
   display->fillScreen(DARKGRAY);
@@ -37,17 +19,9 @@ void FieldDisplay::showTable()
   }
 }
 
-/**
- * @brief Samples a touch point to determine user action.
- *
- * Waits for a touch event and determines if it's a short tap (to reveal a field)
- * or a long press (to place a flag).
- */
 void FieldDisplay::samplePoint()
 {
-  // Wait for a touch.
   while (!ctp->touched());
-  // A short touch reveals the field, a long touch places a flag.
   TS_Point point;
   int i;
   for (i = 0; i < 15 && ctp->touched(); i++)
@@ -66,10 +40,6 @@ void FieldDisplay::samplePoint()
   }
 }
 
-/**
- * @brief Reveals the field at the specified touch point.
- * @param point The TS_Point object representing the touch coordinates.
- */
 void FieldDisplay::markField(TS_Point point)
 {
   Vector2D fieldCoords = *getTouchedFieldArrayPosition(point);
@@ -81,7 +51,6 @@ void FieldDisplay::markField(TS_Point point)
 
   Field *field = &board->fields[fieldCoords.y][fieldCoords.x];
 
-  // If the field is already revealed or flagged, do nothing.
   if (field->state == REVEALED || field->state == FLAGGED)
   {
     return;
@@ -100,10 +69,6 @@ void FieldDisplay::markField(TS_Point point)
   }
 }
 
-/**
- * @brief Toggles a flag on the field at the specified touch point.
- * @param point The TS_Point object representing the touch coordinates.
- */
 void FieldDisplay::flagField(TS_Point point)
 {
   Vector2D coords = *getTouchedFieldArrayPosition(point);
@@ -116,35 +81,18 @@ void FieldDisplay::flagField(TS_Point point)
   board->changeFlag(coords.y, coords.x);
   displayField(coords.y, coords.x);
   showRemainMines();
-
-  return;
 }
 
-/**
- * @brief Calculates the top-left Y coordinate for a given field row.
- * @param row The row index of the field.
- * @return The calculated Y coordinate on the screen.
- */
 int FieldDisplay::calculateY(int row)
 {
   return START_Y + row * (FIELD_SIZE + FIELD_GAP);
 }
 
-/**
- * @brief Calculates the top-left X coordinate for a given field column.
- * @param column The column index of the field.
- * @return The calculated X coordinate on the screen.
- */
 int FieldDisplay::calculateX(int column)
 {
   return START_X + column * (FIELD_SIZE + FIELD_GAP);
 }
 
-/**
- * @brief Converts raw touch coordinates into a grid position on the game board.
- * @param point The TS_Point object representing the touch coordinates.
- * @return A Vector2D pointer with the (x, y) grid coordinates. Returns (-1, -1) if no field was touched.
- */
 Vector2D *FieldDisplay::getTouchedFieldArrayPosition(TS_Point point)
 {
   for (int i = 0; i < board->size; i++)
@@ -161,13 +109,6 @@ Vector2D *FieldDisplay::getTouchedFieldArrayPosition(TS_Point point)
   return new Vector2D(-1, -1);
 }
 
-/**
- * @brief Determines if a touch point is within the boundaries of a specific field.
- * @param point The TS_Point object representing the touch coordinates.
- * @param row The row index of the field to check.
- * @param column The column index of the field to check.
- * @return True if the touch point is within the field, false otherwise.
- */
 bool FieldDisplay::fieldHasTouched(TS_Point point, int row, int column)
 {
   int fieldStartX = calculateX(column);
@@ -178,39 +119,31 @@ bool FieldDisplay::fieldHasTouched(TS_Point point, int row, int column)
   return xCheck && yCheck;
 }
 
-/**
- * @brief Draws a single field based on its current state (unselected, revealed, flagged).
- * @param row The row index of the field.
- * @param column The column index of the field.
- */
 void FieldDisplay::displayField(int row, int column)
 {
   int x = calculateX(column);
   int y = calculateY(row);
   Vector2D fieldPosition(x, y);
 
-  switch (board->fields[row][column].state)
+  Field field = board->fields[row][column];
+
+  switch (field.state)
   {
     case UNSELECTED:
-      displayUnselectedField(row, column, fieldPosition);
+      displayUnselectedField(field, fieldPosition);
       break;
     case REVEALED:
-      displayRevealedField(row, column, fieldPosition);
+      displayRevealedField(field, fieldPosition);
       break;
     case FLAGGED:
-      displayFlaggedField(row, column, fieldPosition);
+      displayFlaggedField(field, fieldPosition);
       break;
   }
 }
 
-/**
- * @brief Renders an unrevealed field.
- * @param row The row index of the field.
- * @param column The column index of the field.
- */
-void FieldDisplay::displayUnselectedField(int row, int column, Vector2D fieldPosition)
+void FieldDisplay::displayUnselectedField(Field field, Vector2D fieldPosition)
 {
-  if (board->hasRevealedMine && board->fields[row][column].hasMine)
+  if (board->hasRevealedMine && field.hasMine)
   {
     drawField.drawMine(fieldPosition);
   }
@@ -220,39 +153,24 @@ void FieldDisplay::displayUnselectedField(int row, int column, Vector2D fieldPos
   }
 }
 
-/**
- * @brief Renders a revealed field, showing either a mine or the number of neighboring mines.
- * @param row The row index of the field.
- * @param column The column index of the field.
- */
-void FieldDisplay::displayRevealedField(int row, int column, Vector2D fieldPosition)
+void FieldDisplay::displayRevealedField(Field field, Vector2D fieldPosition)
 {
-  if (board->fields[row][column].hasMine)
+  if (field.hasMine)
   {
     drawField.drawRevealedMine(fieldPosition);
   }
   else
   {
-    drawField.drawRevealedFieldWithoutMine(fieldPosition, board->fields[row][column].neighborMineCount);
+    drawField.drawRevealedFieldWithoutMine(fieldPosition, field.neighborMineCount);
   }
 }
 
-/**
- * @brief Renders a field that has been marked with a flag by the user.
- * @param row The row index of the field.
- * @param column The column index of the field.
- */
-void FieldDisplay::displayFlaggedField(int row, int column, Vector2D fieldPosition)
+void FieldDisplay::displayFlaggedField(Field field, Vector2D fieldPosition)
 {
-  bool isWrongFlag = board->hasRevealedMine && !board->fields[row][column].hasMine;
+  bool isWrongFlag = board->hasRevealedMine && !field.hasMine;
   drawField.drawFlag(fieldPosition, isWrongFlag ? DARKRED : GRAY);
 }
 
-/**
- * @brief Displays the remaining number of mines to be found.
- *
- * This is calculated by subtracting the number of placed flags from the total mine count.
- */
 void FieldDisplay::showRemainMines()
 {
   display->setCursor(START_X, 20);
