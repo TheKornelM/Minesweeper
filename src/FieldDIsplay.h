@@ -1,13 +1,15 @@
 #ifndef MINESWEEPER_FIELD_DISPLAY_H
 #define MINESWEEPER_FIELD_DISPLAY_H
 
-#include "Color.h"
-#include "Minesweeper.h"
-#include "Vector2D.h"
 #include <Adafruit_FT6206.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_ILI9341.h>
 #include <SPI.h>
+
+#include "Color.h"
+#include "Minesweeper.h"
+#include "Vector2D.h"
+#include "menu/BaseMenuPage.h"
 
 #define START_Y 80
 #define START_X 5
@@ -20,13 +22,11 @@
  * @class FieldDisplay
  * @brief Handles the graphical rendering and touch input for the Minesweeper game.
  */
-class FieldDisplay
+class FieldDisplay : public BaseMenuPage
 {
   public:
 
     Minesweeper *board;
-    Adafruit_ILI9341 *display;
-    Adafruit_FT6206 *ctp;
 
     FieldDisplay(Minesweeper *fields, Adafruit_ILI9341 *screen, Adafruit_FT6206 *touch);
     void showTable();

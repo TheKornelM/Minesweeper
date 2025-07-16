@@ -16,10 +16,9 @@
  * @param touch Pointer to the Adafruit_FT6206 touch controller instance.
  */
 FieldDisplay::FieldDisplay(Minesweeper *fields, Adafruit_ILI9341 *screen, Adafruit_FT6206 *touch)
+    : BaseMenuPage(screen, touch)
 {
   board = fields;
-  display = screen;
-  ctp = touch;
 }
 
 /**
@@ -53,7 +52,7 @@ void FieldDisplay::samplePoint()
   int i;
   for (i = 0; i < 15 && ctp->touched(); i++)
   {
-    point = getPoint();
+    point = getMappedTouchPoint();
     delay(50);
   }
 
@@ -319,19 +318,6 @@ color FieldDisplay::getColor(int neighborMinesCount)
     default:
       return DARKGRAY;
   }
-}
-
-/**
- * @brief Waits for and retrieves a touch point, mapping it to the screen coordinates.
- * @return A TS_Point object with the mapped (x, y) coordinates of the touch.
- */
-TS_Point FieldDisplay::getPoint()
-{
-  while (!ctp->touched());
-  TS_Point point = ctp->getPoint();
-  point.x = map(point.x, 0, 240, 240, 0);
-  point.y = map(point.y, 0, 320, 320, 0);
-  return point;
 }
 
 /**

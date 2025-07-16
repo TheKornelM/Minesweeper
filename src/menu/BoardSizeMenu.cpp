@@ -1,8 +1,7 @@
 #include "BoardSizeMenu.h"
 
-BoardSizeMenu::BoardSizeMenu(Adafruit_ILI9341 *display, Adafruit_FT6206 *ctp) : BaseMenuPage(display)
+BoardSizeMenu::BoardSizeMenu(Adafruit_ILI9341 *display, Adafruit_FT6206 *ctp) : BaseMenuPage(display, ctp)
 {
-  this->ctp = ctp;
 }
 
 int BoardSizeMenu::getSize()
@@ -77,19 +76,4 @@ void BoardSizeMenu::drawTitle()
   display->setTextColor(ILI9341_WHITE);
   display->setCursor(50, 40);
   display->print("Board size:");
-}
-
-/**
- * @brief Waits for a touch input and returns the mapped screen coordinates.
- * @return A TS_Point with mapped x and y values.
- */
-TS_Point BoardSizeMenu::getMappedTouchPoint()
-{
-  while (!ctp->touched());
-
-  TS_Point point = ctp->getPoint();
-  point.x = map(point.x, 0, 240, 240, 0);
-  point.y = map(point.y, 0, 320, 320, 0);
-
-  return point;
 }

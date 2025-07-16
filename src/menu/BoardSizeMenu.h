@@ -33,11 +33,9 @@ class BoardSizeMenu : public BaseMenuPage
 
   private:
 
-    Adafruit_FT6206 *ctp;
     int getSizeFromPosition(TS_Point point);
     void showSizeButtons();
     void drawTitle();
-    TS_Point getMappedTouchPoint();
 };
 
 #endif
