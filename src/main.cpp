@@ -11,10 +11,6 @@
 #include <Adafruit_ILI9341.h>
 #include <Arduino.h>
 
-#include "Color.h"
-#include "FieldDisplay.h"
-#include "Minesweeper.h"
-#include "menu/BoardSizeMenu.h"
 #include "menu/MenuHandler.h"
 
 #define TFT_DC 9
