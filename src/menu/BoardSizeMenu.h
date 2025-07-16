@@ -4,6 +4,7 @@
 #include <Adafruit_FT6206.h>
 #include <Adafruit_ILI9341.h>
 
+#include "BaseMenuPage.h"
 #include "Color.h"
 
 #define VERTICAL_STACK_X_START 70
@@ -18,7 +19,7 @@
 #define SIZE_8_BUTTON_Y_START 240
 #define SIZE_8_BUTTON_Y_END 290
 
-class BoardSizeMenu
+class BoardSizeMenu : public BaseMenuPage
 {
   public:
 
@@ -32,7 +33,6 @@ class BoardSizeMenu
 
   private:
 
-    Adafruit_ILI9341 *display;
     Adafruit_FT6206 *ctp;
     int getSizeFromPosition(TS_Point point);
     void showSizeButtons();

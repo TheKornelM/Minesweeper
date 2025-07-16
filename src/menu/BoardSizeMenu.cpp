@@ -1,8 +1,7 @@
 #include "BoardSizeMenu.h"
 
-BoardSizeMenu::BoardSizeMenu(Adafruit_ILI9341 *display, Adafruit_FT6206 *ctp)
+BoardSizeMenu::BoardSizeMenu(Adafruit_ILI9341 *display, Adafruit_FT6206 *ctp) : BaseMenuPage(display)
 {
-  this->display = display;
   this->ctp = ctp;
 }
 
@@ -73,7 +72,7 @@ void BoardSizeMenu::showSizeButtons()
  */
 void BoardSizeMenu::drawTitle()
 {
-  display->fillScreen(DARKGRAY);
+  clearDisplay();
   display->setTextSize(2);
   display->setTextColor(ILI9341_WHITE);
   display->setCursor(50, 40);

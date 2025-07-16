@@ -15,6 +15,7 @@
 #include "FieldDisplay.h"
 #include "Minesweeper.h"
 #include "menu/BoardSizeMenu.h"
+#include "menu/MenuHandler.h"
 
 #define TFT_DC 9
 #define TFT_CS 10
@@ -46,18 +47,8 @@ void setup()
  */
 void loop()
 {
-  BoardSizeMenu sizeMenu(&display, &ctp);
-  int size = sizeMenu.getSize();
-
-  Minesweeper table(size);
-  FieldDisplay fieldDisplay(&table, &display, &ctp);
-  fieldDisplay.showTable();
-
-  do
-  {
-    fieldDisplay.samplePoint();
-    delay(500);
-  } while (!table.hasRevealedMine && table.remainFields > table.mineCount);
+  MenuHandler menuHandler(&display, &ctp);
+  menuHandler.showMainMenu();
 
   delay(4000);
 }
