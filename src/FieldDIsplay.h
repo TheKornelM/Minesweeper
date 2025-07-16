@@ -7,6 +7,8 @@
 #include <SPI.h>
 
 #include "Color.h"
+#include "DisplayDefines.h"
+#include "DrawField.h"
 #include "Minesweeper.h"
 #include "Vector2D.h"
 #include "menu/BaseMenuPage.h"
@@ -15,7 +17,6 @@
 #define START_X 5
 #define MAX_HEIGHT 320
 #define MAX_WIDTH 240
-#define FIELD_SIZE 20
 #define FIELD_GAP 10
 
 /**
@@ -36,16 +37,18 @@ class FieldDisplay : public BaseMenuPage
 
   private:
 
+    DrawField drawField;
+
     int calculateY(int row);
     int calculateX(int column);
     void displayMine(int xCoord, int yCoord);
     void displayField(int row, int column);
-    void displayUnselectedField(int row, int column);
+    void displayUnselectedField(int row, int column, Vector2D fieldPosition);
     Vector2D *getTouchedFieldArrayPosition(TS_Point point);
     bool fieldHasTouched(TS_Point point, int row, int column);
     void displayFlag(int xCoord, int yCoord);
-    void displayRevealedField(int row, int column);
-    void displayFlaggedField(int row, int column);
+    void displayRevealedField(int row, int column, Vector2D fieldPosition);
+    void displayFlaggedField(int row, int column, Vector2D fieldPosition);
     color getColor(int neighborMinesCount);
     TS_Point getPoint();
     void showRemainMines();

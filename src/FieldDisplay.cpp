@@ -16,7 +16,7 @@
  * @param touch Pointer to the Adafruit_FT6206 touch controller instance.
  */
 FieldDisplay::FieldDisplay(Minesweeper *fields, Adafruit_ILI9341 *screen, Adafruit_FT6206 *touch)
-    : BaseMenuPage(screen, touch)
+    : BaseMenuPage(screen, touch), drawField(screen)
 {
   board = fields;
 }
@@ -179,47 +179,26 @@ bool FieldDisplay::fieldHasTouched(TS_Point point, int row, int column)
 }
 
 /**
- * @brief Draws a flag icon at the specified screen coordinates.
- * @param xCoord The top-left X coordinate of the field.
- * @param yCoord The top-left Y coordinate of the field.
- */
-void FieldDisplay::displayFlag(int xCoord, int yCoord)
-{
-  // Flagpole
-  display->fillRect(xCoord + 14, yCoord + 12, 1, 5, BLACK);
-  // Flag base
-  display->fillRect(xCoord + 9, yCoord + 17, 7, 1, BLACK);
-  // Flag banner
-  display->fillTriangle(xCoord + 2, yCoord + 7, xCoord + 14, yCoord + 2, xCoord + 14, yCoord + 11, RED);
-}
-
-/**
- * @brief Draws a mine icon at the specified screen coordinates.
- * @param xCoord The top-left X coordinate of the field.
- * @param yCoord The top-left Y coordinate of the field.
- */
-void FieldDisplay::displayMine(int xCoord, int yCoord)
-{
-  display->fillCircle(xCoord + FIELD_SIZE / 2, yCoord + FIELD_SIZE / 2, FIELD_SIZE * 0.3, BLACK);
-}
-
-/**
  * @brief Draws a single field based on its current state (unselected, revealed, flagged).
  * @param row The row index of the field.
  * @param column The column index of the field.
  */
 void FieldDisplay::displayField(int row, int column)
 {
+  int x = calculateX(column);
+  int y = calculateY(row);
+  Vector2D fieldPosition(x, y);
+
   switch (board->fields[row][column].state)
   {
     case UNSELECTED:
-      displayUnselectedField(row, column);
+      displayUnselectedField(row, column, fieldPosition);
       break;
     case REVEALED:
-      displayRevealedField(row, column);
+      displayRevealedField(row, column, fieldPosition);
       break;
     case FLAGGED:
-      displayFlaggedField(row, column);
+      displayFlaggedField(row, column, fieldPosition);
       break;
   }
 }
@@ -229,17 +208,15 @@ void FieldDisplay::displayField(int row, int column)
  * @param row The row index of the field.
  * @param column The column index of the field.
  */
-void FieldDisplay::displayUnselectedField(int row, int column)
+void FieldDisplay::displayUnselectedField(int row, int column, Vector2D fieldPosition)
 {
-  int xCoord = calculateX(column);
-  int yCoord = calculateY(row);
   if (board->hasRevealedMine && board->fields[row][column].hasMine)
   {
-    displayMine(xCoord, yCoord);
+    drawField.drawMine(fieldPosition);
   }
   else
   {
-    display->fillRect(xCoord, yCoord, FIELD_SIZE, FIELD_SIZE, GRAY);
+    display->fillRect(fieldPosition.x, fieldPosition.y, FIELD_SIZE, FIELD_SIZE, GRAY);
   }
 }
 
@@ -248,23 +225,15 @@ void FieldDisplay::displayUnselectedField(int row, int column)
  * @param row The row index of the field.
  * @param column The column index of the field.
  */
-void FieldDisplay::displayRevealedField(int row, int column)
+void FieldDisplay::displayRevealedField(int row, int column, Vector2D fieldPosition)
 {
-  int xCoord = calculateX(column);
-  int yCoord = calculateY(row);
   if (board->fields[row][column].hasMine)
   {
-    // The mine revealed by the user is shown on a red background.
-    display->fillRect(xCoord, yCoord, FIELD_SIZE, FIELD_SIZE, RED);
-    displayMine(xCoord, yCoord);
+    drawField.drawRevealedMine(fieldPosition);
   }
   else
   {
-    display->fillRect(xCoord, yCoord, FIELD_SIZE, FIELD_SIZE, DARKGRAY);
-    display->setCursor(xCoord + 2, yCoord);
-    display->setTextColor(getColor(board->fields[row][column].neighborMineCount));
-    display->setTextSize(3);
-    display->println(board->fields[row][column].neighborMineCount);
+    drawField.drawRevealedFieldWithoutMine(fieldPosition, board->fields[row][column].neighborMineCount);
   }
 }
 
@@ -273,51 +242,10 @@ void FieldDisplay::displayRevealedField(int row, int column)
  * @param row The row index of the field.
  * @param column The column index of the field.
  */
-void FieldDisplay::displayFlaggedField(int row, int column)
+void FieldDisplay::displayFlaggedField(int row, int column, Vector2D fieldPosition)
 {
-  int xCoord = calculateX(column);
-  int yCoord = calculateY(row);
-  if (board->hasRevealedMine && !board->fields[row][column].hasMine)
-  {
-    // At the end of the game, a wrongly placed flag is shown on a dark red background.
-    display->fillRect(xCoord, yCoord, FIELD_SIZE, FIELD_SIZE, DARKRED);
-  }
-  else
-  {
-    // A correctly flagged field is shown on a gray background.
-    display->fillRect(xCoord, yCoord, FIELD_SIZE, FIELD_SIZE, GRAY);
-  }
-  displayFlag(xCoord, yCoord);
-}
-
-/**
- * @brief Gets the appropriate color for the number of neighboring mines.
- * @param neighborMinesCount The number of mines adjacent to the field.
- * @return The color value for the text.
- */
-color FieldDisplay::getColor(int neighborMinesCount)
-{
-  switch (neighborMinesCount)
-  {
-    case 1:
-      return BLUE;
-    case 2:
-      return GREEN;
-    case 3:
-      return RED;
-    case 4:
-      return DARKBLUE;
-    case 5:
-      return DARKRED;
-    case 6:
-      return CYAN;
-    case 7:
-      return BLACK;
-    case 8:
-      return GRAY;
-    default:
-      return DARKGRAY;
-  }
+  bool isWrongFlag = board->hasRevealedMine && !board->fields[row][column].hasMine;
+  drawField.drawFlag(fieldPosition, isWrongFlag ? DARKRED : GRAY);
 }
 
 /**
