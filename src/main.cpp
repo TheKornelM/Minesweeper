@@ -28,6 +28,14 @@ void setup()
 {
   Serial.begin(9600);
   randomSeed(analogRead(0));
+
+  display.begin();
+
+  if (!ctp.begin(40))
+  {
+    Serial.println("Error initializing touchscreen!");
+    while (1);
+  }
 }
 
 /**
@@ -38,14 +46,6 @@ void setup()
  */
 void loop()
 {
-  display.begin();
-
-  if (!ctp.begin(40))
-  {
-    Serial.println("Error initializing touchscreen!");
-    while (1);
-  }
-
   BoardSizeMenu sizeMenu(&display, &ctp);
   int size = sizeMenu.getSize();
 
