@@ -14,6 +14,8 @@ class BaseMenuPage
 
     BaseMenuPage(Adafruit_ILI9341 *display, Adafruit_FT6206 *ctp);
     void clearDisplay();
+    virtual void showContent() = 0;
+    virtual void handleInput() = 0;
     TS_Point getMappedTouchPoint();
 };
 

@@ -68,6 +68,14 @@ class FieldDisplay : public BaseMenuPage
      */
     void flagField(TS_Point point);
 
+    void showContent()
+    {
+    }
+
+    void handleInput() {
+
+    };
+
   private:
 
     /**

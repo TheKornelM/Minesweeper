@@ -36,6 +36,14 @@ class BoardSizeMenu : public BaseMenuPage
     int getSizeFromPosition(TS_Point point);
     void showSizeButtons();
     void drawTitle();
+
+    virtual void showContent()
+    {
+    }
+
+    virtual void handleInput()
+    {
+    }
 };
 
 #endif

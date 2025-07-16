@@ -3,8 +3,12 @@
 
 #include <Adafruit_FT6206.h>
 #include <Adafruit_ILI9341.h>
+#include <FieldDisplay.h>
+#include <Minesweeper.h>
 
 #include "BaseMenuPage.h"
+#include "BoardSizeMenu.h"
+#include "MainMenuButtonWithMessagePage.h"
 
 class MenuHandler
 {

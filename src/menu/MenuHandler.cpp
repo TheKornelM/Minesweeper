@@ -1,7 +1,4 @@
 #include "MenuHandler.h"
-#include "BoardSizeMenu.h"
-#include <FieldDisplay.h>
-#include <Minesweeper.h>
 
 MenuHandler::MenuHandler(Adafruit_ILI9341 *display, Adafruit_FT6206 *ctp)
 {
@@ -36,7 +33,8 @@ void MenuHandler::showNewGameBoard(int size)
 
   if (table.hasRevealedMine)
   {
-    showFailedGame();
+    // MainMenuButtonWithMessagePage failedPage(display, ctp, "Failed");
+    // failedPage.showContent();
   }
   else if (table.remainFields <= table.mineCount)
   {
