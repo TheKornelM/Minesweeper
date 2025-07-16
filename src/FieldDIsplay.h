@@ -41,16 +41,12 @@ class FieldDisplay : public BaseMenuPage
 
     int calculateY(int row);
     int calculateX(int column);
-    void displayMine(int xCoord, int yCoord);
     void displayField(int row, int column);
     void displayUnselectedField(int row, int column, Vector2D fieldPosition);
     Vector2D *getTouchedFieldArrayPosition(TS_Point point);
     bool fieldHasTouched(TS_Point point, int row, int column);
-    void displayFlag(int xCoord, int yCoord);
     void displayRevealedField(int row, int column, Vector2D fieldPosition);
     void displayFlaggedField(int row, int column, Vector2D fieldPosition);
-    color getColor(int neighborMinesCount);
-    TS_Point getPoint();
     void showRemainMines();
 };
 
