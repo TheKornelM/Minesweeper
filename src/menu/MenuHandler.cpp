@@ -31,14 +31,22 @@ void MenuHandler::showNewGameBoard(int size)
     delay(500);
   } while (!table.hasRevealedMine && table.remainFields > table.mineCount);
 
+  String message;
+
   if (table.hasRevealedMine)
   {
-    // MainMenuButtonWithMessagePage failedPage(display, ctp, "Failed");
-    // failedPage.showContent();
+    message = "Failed game!";
   }
   else if (table.remainFields <= table.mineCount)
   {
-    showSuccessfulGame();
+    message = "Successfully game!";
+  }
+
+  if (message != "")
+  {
+    MainMenuButtonWithMessagePage donePage(display, ctp, message);
+    donePage.showContent();
+    donePage.handleInput();
   }
 }
 

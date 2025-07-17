@@ -10,14 +10,25 @@ MainMenuButtonWithMessagePage::MainMenuButtonWithMessagePage(Adafruit_ILI9341 *d
 void MainMenuButtonWithMessagePage::showContent()
 {
   clearDisplay();
-  for (int i = 0; i < 3; i++)
-  {
-    display->fillRect(70, (90 + (i * 75)), 100, 50, GRAY);
-    display->setCursor(115, 105 + (i * 75));
-    display->print(message);
-  }
+  display->setTextColor(ILI9341_WHITE);
+  drawBackToMenuButton();
+  drawMessageLabel();
 }
 
 void MainMenuButtonWithMessagePage::handleInput()
 {
+  // TS_Point p = getMappedTouchPoint();
+}
+
+void MainMenuButtonWithMessagePage::drawBackToMenuButton()
+{
+  display->fillRect(10, 185, 220, 50, GRAY);
+  display->setCursor(15, 200);
+  display->print("Back to menu");
+}
+
+void MainMenuButtonWithMessagePage::drawMessageLabel()
+{
+  display->setCursor(15, 125);
+  display->print(message);
 }
