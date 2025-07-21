@@ -44,6 +44,7 @@ void MenuHandler::showNewGameBoard(int size)
 
   if (message != "")
   {
+    delay(2000);
     MainMenuButtonWithMessagePage donePage(display, ctp, message);
     donePage.showContent();
     donePage.handleInput();

@@ -45,8 +45,6 @@ void loop()
 {
   MenuHandler menuHandler(&display, &ctp);
   menuHandler.showMainMenu();
-
-  delay(4000);
 }
 
 #endif

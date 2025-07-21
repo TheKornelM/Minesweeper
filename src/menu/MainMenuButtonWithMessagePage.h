@@ -3,6 +3,11 @@
 
 #include "BaseMenuPage.h"
 
+#define BACK_BUTTON_X_START 10
+#define BACK_BUTTON_WIDTH 220
+#define BACK_BUTTON_Y_START 185
+#define BACK_BUTTON_HEIGHT 50
+
 class MainMenuButtonWithMessagePage : public BaseMenuPage
 {
   public:
@@ -17,6 +22,7 @@ class MainMenuButtonWithMessagePage : public BaseMenuPage
 
     void drawBackToMenuButton();
     void drawMessageLabel();
+    bool isBackToMenuTouched(TS_Point point);
 };
 
 #endif
