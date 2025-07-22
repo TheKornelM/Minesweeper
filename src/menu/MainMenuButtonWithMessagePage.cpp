@@ -33,7 +33,12 @@ void MainMenuButtonWithMessagePage::drawBackToMenuButton()
 
 void MainMenuButtonWithMessagePage::drawMessageLabel()
 {
-  display->setCursor(15, 125);
+  int y = 125;
+
+  int16_t x1, y1;
+  uint16_t w, h;
+  display->getTextBounds(message, 0, y, &x1, &y1, &w, &h);
+  display->setCursor((display->width() - w) / 2 - x1, y);
   display->print(message);
 }
 

@@ -35,11 +35,11 @@ void MenuHandler::showNewGameBoard(int size)
 
   if (table.hasRevealedMine)
   {
-    message = "Failed game!";
+    message = "Failed game";
   }
   else if (table.remainFields <= table.mineCount)
   {
-    message = "Successfully game!";
+    message = "Completed";
   }
 
   if (message != "")
