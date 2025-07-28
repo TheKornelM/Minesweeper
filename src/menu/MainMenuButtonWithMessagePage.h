@@ -8,6 +8,8 @@
 #define BACK_BUTTON_Y_START 185
 #define BACK_BUTTON_HEIGHT 50
 
+#define BUTTON_MESSAGE "Back to menu"
+
 class MainMenuButtonWithMessagePage : public BaseMenuPage
 {
   public:

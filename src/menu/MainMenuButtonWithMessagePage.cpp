@@ -26,9 +26,14 @@ void MainMenuButtonWithMessagePage::handleInput()
 
 void MainMenuButtonWithMessagePage::drawBackToMenuButton()
 {
-  display->fillRect(BACK_BUTTON_X_START, BACK_BUTTON_Y_START, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT, GRAY);
-  display->setCursor(15, 200);
-  display->print("Back to menu");
+  int y = 200;
+
+  int16_t x1, y1;
+  uint16_t w, h;
+  display->getTextBounds(BUTTON_MESSAGE, 0, y, &x1, &y1, &w, &h);
+  display->fillRect((display->width() - w) / 2 - x1 - 5, BACK_BUTTON_Y_START, w + 10, BACK_BUTTON_HEIGHT, GRAY);
+  display->setCursor((display->width() - w) / 2 - x1, y);
+  display->print(BUTTON_MESSAGE);
 }
 
 void MainMenuButtonWithMessagePage::drawMessageLabel()
