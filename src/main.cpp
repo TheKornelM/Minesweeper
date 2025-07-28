@@ -5,16 +5,13 @@
 #ifndef MINESWEEPER_MAIN
 #define MINESWEEPER_MAIN
 
-#include "SPI.h"
 #include <Adafruit_FT6206.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_ILI9341.h>
 #include <Arduino.h>
+#include <SPI.h>
 
-#include "Color.h"
-#include "FieldDisplay.h"
-#include "Minesweeper.h"
-#include "menu/BoardSizeMenu.h"
+#include "menu/MenuHandler.h"
 
 #define TFT_DC 9
 #define TFT_CS 10
@@ -28,6 +25,14 @@ void setup()
 {
   Serial.begin(9600);
   randomSeed(analogRead(0));
+
+  display.begin();
+
+  if (!ctp.begin(40))
+  {
+    Serial.println("Error initializing touchscreen!");
+    while (1);
+  }
 }
 
 /**
@@ -38,28 +43,8 @@ void setup()
  */
 void loop()
 {
-  display.begin();
-
-  if (!ctp.begin(40))
-  {
-    Serial.println("Error initializing touchscreen!");
-    while (1);
-  }
-
-  BoardSizeMenu sizeMenu(&display, &ctp);
-  int size = sizeMenu.getSize();
-
-  Minesweeper table(size);
-  FieldDisplay fieldDisplay(&table, &display, &ctp);
-  fieldDisplay.showTable();
-
-  do
-  {
-    fieldDisplay.samplePoint();
-    delay(500);
-  } while (!table.hasRevealedMine && table.remainFields > table.mineCount);
-
-  delay(4000);
+  MenuHandler menuHandler(&display, &ctp);
+  menuHandler.showMainMenu();
 }
 
 #endif
