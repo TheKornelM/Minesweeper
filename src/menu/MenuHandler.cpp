@@ -50,13 +50,3 @@ void MenuHandler::showNewGameBoard(int size)
     donePage.handleInput();
   }
 }
-
-void MenuHandler::showFailedGame()
-{
-  // TODO: implement failed game screen
-}
-
-void MenuHandler::showSuccessfulGame()
-{
-  // TODO: implement successful game screen
-}
