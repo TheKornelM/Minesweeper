@@ -2,12 +2,15 @@
 #define MINESWEEPER_MAIN_MENU_BUTTON_WITH_MESSAGE_PAGE
 
 #include "BaseMenuPage.h"
+#include "TextBounds.h"
+#include "shapes/Rectangle.h"
 
-#define BACK_BUTTON_X_START 10
-#define BACK_BUTTON_WIDTH 220
+#define MESSAGE_LABEL_Y_START 125
+
 #define BACK_BUTTON_Y_START 185
 #define BACK_BUTTON_HEIGHT 50
 
+#define BUTTON_LABEL_Y_START 200
 #define BUTTON_MESSAGE "Back to menu"
 
 class MainMenuButtonWithMessagePage : public BaseMenuPage
@@ -21,6 +24,8 @@ class MainMenuButtonWithMessagePage : public BaseMenuPage
     void handleInput();
 
   private:
+
+    Rectangle mainButton = Rectangle(0, 0, 0, 0);
 
     void drawBackToMenuButton();
     void drawMessageLabel();

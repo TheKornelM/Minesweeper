@@ -5,6 +5,9 @@ MainMenuButtonWithMessagePage::MainMenuButtonWithMessagePage(Adafruit_ILI9341 *d
     : BaseMenuPage(display, ctp)
 {
   this->message = message;
+
+  TextBounds bounds(display, BUTTON_MESSAGE, BUTTON_LABEL_Y_START);
+  this->mainButton = Rectangle(bounds.getCenteredX() - 5, BACK_BUTTON_Y_START, bounds.w + 10, BACK_BUTTON_HEIGHT);
 }
 
 void MainMenuButtonWithMessagePage::showContent()
@@ -26,31 +29,23 @@ void MainMenuButtonWithMessagePage::handleInput()
 
 void MainMenuButtonWithMessagePage::drawBackToMenuButton()
 {
-  int y = 200;
+  display->fillRect(mainButton.x, mainButton.y, mainButton.width, mainButton.height, GRAY);
 
-  int16_t x1, y1;
-  uint16_t w, h;
-  display->getTextBounds(BUTTON_MESSAGE, 0, y, &x1, &y1, &w, &h);
-  display->fillRect((display->width() - w) / 2 - x1 - 5, BACK_BUTTON_Y_START, w + 10, BACK_BUTTON_HEIGHT, GRAY);
-  display->setCursor((display->width() - w) / 2 - x1, y);
+  TextBounds bounds(display, BUTTON_MESSAGE, BUTTON_LABEL_Y_START);
+  int x = bounds.getCenteredX();
+  display->setCursor(x, BUTTON_LABEL_Y_START);
   display->print(BUTTON_MESSAGE);
 }
 
 void MainMenuButtonWithMessagePage::drawMessageLabel()
 {
-  int y = 125;
+  TextBounds bounds(display, message, MESSAGE_LABEL_Y_START);
 
-  int16_t x1, y1;
-  uint16_t w, h;
-  display->getTextBounds(message, 0, y, &x1, &y1, &w, &h);
-  display->setCursor((display->width() - w) / 2 - x1, y);
+  display->setCursor(bounds.getCenteredX(), MESSAGE_LABEL_Y_START);
   display->print(message);
 }
 
 bool MainMenuButtonWithMessagePage::isBackToMenuTouched(TS_Point point)
 {
-  bool isCorrectXCoords = point.x >= BACK_BUTTON_X_START && point.x <= BACK_BUTTON_X_START + BACK_BUTTON_WIDTH;
-  bool isCorrectYCoords = point.y >= BACK_BUTTON_Y_START && point.y <= BACK_BUTTON_Y_START + BACK_BUTTON_HEIGHT;
-
-  return isCorrectXCoords && isCorrectYCoords;
+  return mainButton.isInside(Vector2D(point.x, point.y));
 }
