@@ -8,6 +8,7 @@
 #include "../FieldDisplay.h"
 #include "BaseMenuPage.h"
 #include "BoardSizeMenu.h"
+#include "GameDifficultyMenu.h"
 #include "MainMenuButtonWithMessagePage.h"
 
 class MenuHandler

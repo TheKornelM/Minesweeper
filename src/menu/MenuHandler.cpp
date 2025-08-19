@@ -15,6 +15,12 @@ void MenuHandler::showBoardSizeSelector()
 {
   BoardSizeMenu sizeMenu(display, ctp);
   int size = sizeMenu.getSize();
+
+  // move to other function
+  GameDifficultyMenu difficultyMenu(display, ctp);
+  int difficulty = difficultyMenu.getDifficulty();
+  //
+
   showNewGameBoard(size);
 }
 
