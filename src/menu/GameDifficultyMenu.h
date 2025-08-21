@@ -6,6 +6,7 @@
 
 #include "BaseMenuPage.h"
 #include "Color.h"
+#include "TextBounds.h"
 
 #define VERTICAL_STACK_X_START 70
 #define VERTICAL_STACK_X_END 170
@@ -36,7 +37,7 @@ class GameDifficultyMenu : public BaseMenuPage
     int getDifficultyFromPosition(TS_Point point);
     void showSizeButtons();
     void drawTitle();
-    void printDifficultyLabel(int difficulty);
+    String getDifficultyString(int difficulty);
 
     virtual void showContent()
     {

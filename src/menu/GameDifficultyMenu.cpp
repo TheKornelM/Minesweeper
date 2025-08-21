@@ -60,9 +60,12 @@ void GameDifficultyMenu::showSizeButtons()
 {
   for (int i = 0; i < 3; i++)
   {
+    String difficulty = getDifficultyString(i);
+    TextBounds currentDifficultyBounds(display, difficulty, 115);
+
     display->fillRect(70, (90 + (i * 75)), 100, 50, GRAY);
-    display->setCursor(115, 105 + (i * 75));
-    printDifficultyLabel(i);
+    display->setCursor(currentDifficultyBounds.getCenteredX();, 105 + (i * 75));
+    display->print(difficulty);
   }
 }
 
@@ -74,11 +77,14 @@ void GameDifficultyMenu::drawTitle()
   clearDisplay();
   display->setTextSize(2);
   display->setTextColor(ILI9341_WHITE);
-  display->setCursor(50, 40);
-  display->print("Difficulty:");
+
+  String message = "Select difficulty";
+  TextBounds difficultyBounds(display, message, 40);
+  display->setCursor(difficultyBounds.getCenteredX(), 40);
+  display->print(message);
 }
 
-void GameDifficultyMenu::printDifficultyLabel(int difficulty)
+String GameDifficultyMenu::getDifficultyString(int difficulty)
 {
   String message;
   switch (difficulty)
@@ -94,5 +100,5 @@ void GameDifficultyMenu::printDifficultyLabel(int difficulty)
       break;
   }
 
-  display->print(message);
+  return message;
 }
