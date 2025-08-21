@@ -7,7 +7,7 @@ GameDifficultyMenu::GameDifficultyMenu(Adafruit_ILI9341 *display, Adafruit_FT620
 int GameDifficultyMenu::getDifficulty()
 {
   drawTitle();
-  showSizeButtons();
+  showDifficultyButtons();
 
   int newSize = 0;
   do
@@ -56,7 +56,7 @@ int GameDifficultyMenu::getDifficultyFromPosition(TS_Point point)
  *
  * Sizes: 6, 7, 8
  */
-void GameDifficultyMenu::showSizeButtons()
+void GameDifficultyMenu::showDifficultyButtons()
 {
   for (int i = 0; i < 3; i++)
   {

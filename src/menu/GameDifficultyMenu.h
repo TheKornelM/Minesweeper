@@ -26,16 +26,16 @@ class GameDifficultyMenu : public BaseMenuPage
 
     GameDifficultyMenu(Adafruit_ILI9341 *display, Adafruit_FT6206 *ctp);
     /**
-     * @brief Displays a menu for selecting the board size and waits for user input.
+     * @brief Displays a menu for selecting the difficulty and waits for user input.
      *
-     * @return The selected board size.
+     * @return The selected difficulty.
      */
     int getDifficulty();
 
   private:
 
     int getDifficultyFromPosition(TS_Point point);
-    void showSizeButtons();
+    void showDifficultyButtons();
     void drawTitle();
     String getDifficultyString(int difficulty);
 
